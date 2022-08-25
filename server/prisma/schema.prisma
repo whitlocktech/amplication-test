@@ -1,0 +1,49 @@
+datasource postgres {
+  provider = "postgresql"
+  url      = env("POSTGRESQL_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  createdAt DateTime @default(now())
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  posts     Post[]
+  roles     String[]
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+model Post {
+  author      User?     @relation(fields: [authorId], references: [id])
+  authorId    String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+  content     String
+  createdAt   DateTime  @default(now())
+  id          String    @id @default(cuid())
+  publishedOn DateTime
+  title       String    @unique
+  updatedAt   DateTime  @updatedAt
+}
+
+model Category {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  name      String?
+  posts     Post[]
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  content   String
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  title     String
+  updatedAt DateTime @updatedAt
+}
